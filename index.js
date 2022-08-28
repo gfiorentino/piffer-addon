@@ -6,7 +6,7 @@ const addon = require("bindings")("piffero_addon");
 const emitter = new EventEmitter();
 
 
-const app = express();
+//const app = express();
 
 emitter.on("start", () => {
   console.log("### START ...");
@@ -21,13 +21,13 @@ emitter.on("end", () => {
 
 addon.callEmit(
   emitter.emit.bind(emitter),
-  "[11350].payload.issue.user.received_events_url"
+  "[1].payload"
 );
 
 
-app.listen(3000, () => {
+/*app.listen(3000, () => {
   console.log("Open your browser");
-});
+}); */
 
 
 

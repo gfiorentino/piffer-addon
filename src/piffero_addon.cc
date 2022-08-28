@@ -22,19 +22,8 @@ void CallEmit(const Napi::CallbackInfo& info) {
 
     Napi::String pathString = info[1].As<Napi::String>();
 
-
-    char *file_name = "large-file.json";
-    int i = 0;
-    const int BLOCK_SIZE = 1024;
-    char buffer[BLOCK_SIZE];
-    //std::ifstream ifs;
-
-    // std::ifstream ifs;
-
-
-    std::ifstream ifs("large-file.json");
+    std::ifstream ifs("files/large-file.json");
     IStreamWrapper isw(ifs);
-    //ifs.open(file_name, std::ifstream::binary | std::ifstream::in);
 
     vector<PathInfo> vectorPathInfo = JsonPath::parseToVector(pathString);
     jpath::JSONParser<IStreamWrapper> parser;

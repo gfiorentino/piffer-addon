@@ -430,7 +430,6 @@ namespace jpath
 
 		bool String(const char *str, SizeType length, bool)
 		{
-			stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "stocazzo")});
 			if (recording && isLast_)
 			{
 				addCommaIfNeeded();
