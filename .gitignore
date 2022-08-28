@@ -1,0 +1,7 @@
+node_modules/
+dist
+**/private
+citylots.json
+.nyc_output/
+build/
+
