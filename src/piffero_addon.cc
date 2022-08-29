@@ -22,7 +22,7 @@ void CallEmit(const Napi::CallbackInfo& info) {
 
     Napi::String pathString = info[1].As<Napi::String>();
 
-    std::ifstream ifs("files/large-file.json");
+    std::ifstream ifs("files/simple.json");
     IStreamWrapper isw(ifs);
 
     vector<PathInfo> vectorPathInfo = JsonPath::parseToVector(pathString);
@@ -30,6 +30,7 @@ void CallEmit(const Napi::CallbackInfo& info) {
     Napi::Function emit = info[0].As<Napi::Function>();
     parser.parsePath(isw, vectorPathInfo, emit, ifs, env);
     emit.Call({Napi::String::New(env, "start")});
+    emit.Call({Napi::String::New(env, "stop")});
 }
 
 

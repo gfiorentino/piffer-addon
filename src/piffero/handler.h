@@ -60,8 +60,8 @@ namespace jpath
 			lastKey = "";
 			isLast_ = isLast;
 			pathPrimoLivello = path.primoLivello;
-			  stream.Call(
-        {Napi::String::New(env, "data"), Napi::String::New(env,path.path)});
+			 /*(
+        {Napi::String::New(env, "data"), Napi::String::New(env,path.nextPath)});*/
 		}
 
 		// used to add escape characters 
@@ -164,7 +164,7 @@ namespace jpath
 			{
 				addCommaIfNeeded();
 											  stream.Call(
-        {Napi::String::New(env, "data"), Napi::String::New(env, "]")});
+        {Napi::String::New(env, "data"), Napi::String::New(env, "[")});
 				
 				//stream << "[";
 			}
@@ -490,7 +490,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			bool result = handlerVector_[parserIndex].Null();
+			handlerVector_[parserIndex].Null();
 			shiftParser();
 			return true;
 		}
@@ -498,13 +498,13 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			bool result = handlerVector_[parserIndex].Bool(b);
+			handlerVector_[parserIndex].Bool(b);
 			shiftParser();
 			return true;
 		}
 		bool Int(int i)
 		{
-			bool result = handlerVector_[parserIndex].Int(i);
+			handlerVector_[parserIndex].Int(i);
 			shiftParser();
 			return true;
 		}
@@ -513,13 +513,13 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			bool result = handlerVector_[parserIndex].Uint(u);
+			handlerVector_[parserIndex].Uint(u);
 			shiftParser();
 			return true;
 		}
 		bool Int64(int64_t i)
 		{
-			bool result = handlerVector_[parserIndex].Int64(i);
+			handlerVector_[parserIndex].Int64(i);
 			shiftParser();
 			return true;
 		}
@@ -527,7 +527,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			bool result = handlerVector_[parserIndex].Uint64(u);
+			handlerVector_[parserIndex].Uint64(u);
 			shiftParser();
 			return true;
 		}
@@ -535,7 +535,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			bool result = handlerVector_[parserIndex].Double(d);
+			handlerVector_[parserIndex].Double(d);
 			shiftParser();
 			return true;
 		}
@@ -543,7 +543,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			bool result = handlerVector_[parserIndex].RawNumber(str, length, copy);
+			handlerVector_[parserIndex].RawNumber(str, length, copy);
 			shiftParser();
 			return true;
 		}
@@ -552,7 +552,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			bool result = handlerVector_[parserIndex].String(str, length, copy);
+			handlerVector_[parserIndex].String(str, length, copy);
 			shiftParser();
 			return true;
 		}
@@ -560,7 +560,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			// bool result = handlerVector_[parserIndex].StartObject();
+			handlerVector_[parserIndex].StartObject();
 			shiftParser();
 			return true;
 		}
@@ -568,7 +568,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			//bool result = handlerVector_[parserIndex].Key(str, length, copy);
+		 	handlerVector_[parserIndex].Key(str, length, copy);
 			shiftParser();
 			return true;
 		}
@@ -576,7 +576,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			//bool result = handlerVector_[parserIndex].EndObject(memberCount);
+			handlerVector_[parserIndex].EndObject(memberCount);
 			shiftParser();
 			return true;
 		}
@@ -584,7 +584,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			// bool result = handlerVector_[parserIndex].StartArray();
+		    handlerVector_[parserIndex].StartArray();
 			shiftParser();
 			return true;
 		}
@@ -592,7 +592,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-			bool result = handlerVector_[parserIndex].EndArray(elementCount);
+			handlerVector_[parserIndex].EndArray(elementCount);
 			shiftParser();
 			return true;
 		}

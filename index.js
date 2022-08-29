@@ -21,7 +21,7 @@ emitter.on("end", () => {
 
 addon.callEmit(
   emitter.emit.bind(emitter),
-  "[1].payload"
+  "ar"
 );
 
 
