@@ -20,18 +20,18 @@ namespace jpath
 	public:
 		JSONParser() {
 		}
-		void parsePath(InputStream& is, vector<PathInfo>& jsonpath, Napi::Function& stream, istream& origin, Napi::Env& env ) {
+		void parsePath(InputStream& is, vector<PathInfo>& jsonpath, Napi::Function& stream, Napi::Function& destroy, Napi::Env& env ) {
 
 
 			vector<SingleStepHandler> handlerVector;
 
 			for (int i = 0; i < jsonpath.size() - 1; i++) {
-				SingleStepHandler handler(jsonpath[i], false, stream, origin, env);
+				SingleStepHandler handler(jsonpath[i], false, stream, destroy, env);
 				handlerVector.push_back(handler);
 			}
 
 
-			SingleStepHandler parser(jsonpath[jsonpath.size() - 1], true, stream, origin, env);
+			SingleStepHandler parser(jsonpath[jsonpath.size() - 1], true, stream, destroy, env);
 			handlerVector.push_back(parser);
 			MasterHandler master(handlerVector);
 			Reader reader;

@@ -45,10 +45,10 @@ namespace jpath
 		bool isLast_;
 		Last last;
 	    Function& stream; // TODO:AUTPUT STREAM 
-		istream& origin;
+		Function& destroy;
 		Env& env;
 
-		SingleStepHandler(PathInfo &path, bool isLast,  Napi::Function &_stream, istream& _origin, Env& _env) : origin(_origin), stream(_stream),env(_env)
+		SingleStepHandler(PathInfo &path, bool isLast,  Napi::Function &_stream,  Napi::Function& _destroy, Env& _env) : destroy(_destroy), stream(_stream),env(_env)
 		{
 			pathItemId = path.itemsId;
 			recording = false;
@@ -121,6 +121,7 @@ namespace jpath
 					closed = true;
 					// origin.setstate(std::ios::eofbit);
 					// stream.ends();
+					
 				}
 				else
 				{
@@ -143,6 +144,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
+					destroy.Call({});
 					//origin.setstate(std::ios::eofbit);
 				}
 				else
@@ -206,6 +208,7 @@ namespace jpath
 			{
 				recording = false;
 				closed = true;
+				destroy.Call({});
 				// origin.setstate(std::ios::eofbit);
 				// stream.ends();
 				return true;
@@ -269,6 +272,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
+					destroy.Call({});
 					// origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
@@ -297,6 +301,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
+					destroy.Call({});
 					// origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
@@ -318,6 +323,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
+								destroy.Call({});
 				//	origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
@@ -340,6 +346,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
+								destroy.Call({});
 					//origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
@@ -361,6 +368,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
+								destroy.Call({});
 					// origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}

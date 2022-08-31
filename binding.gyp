@@ -7,7 +7,7 @@
       ],
       'cflags!': [ '-fno-exceptions' ],
       'cflags_cc!': [ '-fno-exceptions' ],
-      'include_dirs': ["<!@(node -p \"require('node-addon-api').include\")", "deps/rapidjson/include", "src/piffero", "files"],
+      'include_dirs': ["<!@(node -p \"require('node-addon-api').include\")", "deps/rapidjson/include", "src/piffero"],
       'dependencies': ["<!(node -p \"require('node-addon-api').gyp\")"],
       'conditions': [
         ['OS=="win"', {
