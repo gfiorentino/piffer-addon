@@ -144,7 +144,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					destroy.Call({});
+					// destroy.Call({});
 					//origin.setstate(std::ios::eofbit);
 				}
 				else
@@ -208,7 +208,7 @@ namespace jpath
 			{
 				recording = false;
 				closed = true;
-				destroy.Call({});
+				// destroy.Call({});
 				// origin.setstate(std::ios::eofbit);
 				// stream.ends();
 				return true;
@@ -272,7 +272,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					destroy.Call({});
+					// destroy.Call({});
 					// origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
@@ -301,7 +301,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					destroy.Call({});
+					// destroy.Call({});
 					// origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
@@ -323,8 +323,8 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-								destroy.Call({});
-				//	origin.setstate(std::ios::eofbit);
+					// destroy.Call({});
+					//	origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
 			}
@@ -346,7 +346,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-								destroy.Call({});
+					// destroy.Call({});
 					//origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
@@ -368,7 +368,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-								destroy.Call({});
+					//destroy.Call({});
 					// origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}

@@ -40,7 +40,7 @@ emitter.on("data", (evt) => {
 
 emitter.on("end", () => {
   console.timeEnd("c++");
-   //console.log(resultString2);
+ // console.log(resultString2);
  console.log("### END ###");
 });
 
