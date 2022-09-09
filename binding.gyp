@@ -3,7 +3,8 @@
     {
       "target_name": "piffero_addon",
       "sources": [
-        "src/piffero_addon.cc"
+        "src/piffero_addon.cc",
+        "src/SimpleAsyncWorker.cc"
       ],
       'cflags!': [ '-fno-exceptions' ],
       'cflags_cc!': [ '-fno-exceptions' ],

@@ -1,5 +1,5 @@
 #include <napi.h>
-#include <node_api.h>
+#include "SimpleAsyncWorker.h"
 #include "../deps/rapidjson/include/rapidjson/document.h"
 #include "../deps/rapidjson/include/rapidjson/writer.h"
 #include "../deps/rapidjson/include/rapidjson/stringbuffer.h"
@@ -12,7 +12,6 @@
 #include <thread>
 
 using namespace rapidjson;
-using namespace jpath;
 
  struct A {
     inline static std::stringstream s;
@@ -20,22 +19,14 @@ using namespace jpath;
 
   bool first = true;
 
-
- 
   Napi::Value ondata(const Napi::CallbackInfo &info) {
     if (!info[0].IsObject()) printf("Something strange received");
     A::s << info[0].ToString().Utf8Value().c_str();
     if(first == true){
-      Napi::String pathstring = info.Env().Global().Get('path').As<Napi::String>();
-      vector<PathInfo> vectorPathInfo = JsonPath::parseToVector(pathstring);
-      IStreamWrapper isw(A::s);
-      jpath::JSONParser<IStreamWrapper> parser;
-      Napi::Env env = info.Env();
       Napi::Function emit = info.Env().Global().Get('emit').As<Napi::Function>();
-      Napi::Function destroy = info.Env().Global().Get('destroy').As<Napi::Function>();
-      emit.Call({Napi::String::New(info.Env(), "start")});
-      parser.parsePath(isw, vectorPathInfo, emit, destroy, env);
-      first = false;
+        SimpleAsyncWorker* asyncWorker = new SimpleAsyncWorker(emit, A::s);
+        asyncWorker->Queue();
+        first = false;
    }
     return info.Env().Undefined();
   }
@@ -71,12 +62,11 @@ void CallEmit(const Napi::CallbackInfo& info) {
     on.Call(stream, {Napi::String::New(info.Env(), "data"), on_data_ref});
     on.Call(stream, {Napi::String::New(info.Env(), "end"), on_end_ref});
 
-
+  
 
     // nodejs callback
     Napi::Function cb = info[0].As<Napi::Function>();
    // std::iostream iost
- 
 
    
   }

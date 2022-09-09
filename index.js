@@ -31,6 +31,7 @@ resultStream.on("end", () => {
 //const app = express();
 let resultString2 = "";
   console.time("c++");
+   console.log("### start ###");
 emitter.on("start", () => {
 
 });
@@ -40,14 +41,14 @@ emitter.on("data", (evt) => {
 
 emitter.on("end", () => {
   console.timeEnd("c++");
- // console.log(resultString2);
+  console.log(resultString2);
  console.log("### END ###");
 });
 
 let _stream =  fs.createReadStream("files/large-file.json");
  addon.callEmit(
    emitter.emit.bind(emitter),
-   "a[15].payload.pull_request",
+   "a[1].payload.pull_request",
    _stream
  );
 
