@@ -18,7 +18,8 @@ using namespace jpath;
 
 class SimpleAsyncWorker : public AsyncWorker {
  public:
-  SimpleAsyncWorker(Function& callback, std::stringstream& s);
+  SimpleAsyncWorker(Function& callback, std::stringstream& s, Napi::String& _path, 
+  Napi::Function& _outStream, Napi::Function& _destroy, Napi::Env& _env );
   virtual ~SimpleAsyncWorker(){};
 
   void Execute();
@@ -26,4 +27,9 @@ class SimpleAsyncWorker : public AsyncWorker {
 
   private: 
   std::stringstream& stream;
+  std::string path;
+  Napi::Function& outStream;
+  Napi::Function& destroy;
+  Napi::Env& env; 
+
 };

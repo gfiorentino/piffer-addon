@@ -14,7 +14,7 @@ const inputStream = fs.createReadStream("files/large-file.json");
 // pass the stream to Piffero with the json path
 const resultStream = piffero.Piffero.findByPath(
   inputStream,
-  "$.a[15].payload.pull_request"
+  "$.a[120].payload.pull_request"
 );
 
 // trasform the stream to string and print into console
@@ -23,7 +23,7 @@ const resultStream = piffero.Piffero.findByPath(
 resultStream.on("data", (chunk) => (resultString += chunk.toString()));
 resultStream.on("end", () => {
    console.timeEnd("javascript");
-  // console.log(resultString);
+   //console.log(resultString);
 });
 
 
@@ -48,7 +48,7 @@ emitter.on("end", () => {
 let _stream =  fs.createReadStream("files/large-file.json");
  addon.callEmit(
    emitter.emit.bind(emitter),
-   "a[1].payload.pull_request",
+   "a[120].payload.pull_request",
    _stream
  );
 

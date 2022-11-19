@@ -7,6 +7,8 @@
 #include "piffero/path_parser.h"
 #include "piffero/jsonpath.h"
 #include <fstream>
+#include <string>
+#include <iostream>
 #include <vector>
 #include <chrono>
 #include <thread>
@@ -18,17 +20,25 @@ using namespace rapidjson;
 };
 
   bool first = true;
+  int _count = 0;
 
   Napi::Value ondata(const Napi::CallbackInfo &info) {
     if (!info[0].IsObject()) printf("Something strange received");
+    A::s.clear();
     A::s << info[0].ToString().Utf8Value().c_str();
+    _count = _count + 1 ;
     if(first == true){
+      Napi::String pathstring = info.Env().Global().Get('path').As<Napi::String>();
       Napi::Function emit = info.Env().Global().Get('emit').As<Napi::Function>();
-        SimpleAsyncWorker* asyncWorker = new SimpleAsyncWorker(emit, A::s);
+      Napi::Function destroy = info.Env().Global().Get('destroy').As<Napi::Function>();
+       Napi::Env env = info.Env();
+        SimpleAsyncWorker* asyncWorker = new SimpleAsyncWorker(emit, A::s, pathstring, emit, destroy, env);
         asyncWorker->Queue();
         first = false;
+    
    }
-    return info.Env().Undefined();
+  
+  return info.Env().Undefined();
   }
 
 
@@ -49,6 +59,7 @@ void CallEmit(const Napi::CallbackInfo& info) {
     Napi::Object stream = info[2].ToObject();
     env.Global().Set('path',info[1]);
     env.Global().Set('emit',emit);
+
 
     Napi::Function on_data_ref = Napi::Function::New(info.Env(),ondata, "on_data");
     Napi::Function on_end_ref = Napi::Function::New(info.Env(),onend, "on_end");
