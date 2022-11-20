@@ -14,7 +14,7 @@ const fs = require("fs");
 suite
   .add("c++ addon", {
     defer: true,
-    maxTime: 5,
+    maxTime: 10,
     fn: function (deferred) {
       const emitter = new EventEmitter();
       emitter.on("end", () => {
