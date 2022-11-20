@@ -12,7 +12,6 @@ const fs = require("fs");
 // var JSON_PATH = '[1].payload';
 
 suite
-
   .add("c++ addon", {
     defer: true,
     maxTime: 5,
@@ -27,7 +26,7 @@ suite
         deferred.resolve();
       });
 
-      addon.callEmit(emitter.emit.bind(emitter), "a[5000].payload.pull_request.url");
+      addon.callEmit(emitter.emit.bind(emitter), "a[50].payload.pull_request.url");
     },
   })
   .add("Piffero (stream)", {
@@ -36,7 +35,7 @@ suite
     fn: function (deferred) {
       var result = piffero.Piffero.findByPath(
         fs.createReadStream("files/large-file.json"),
-        "$.a[5000].payload.pull_request.url"
+        "$.a[50].payload.pull_request.url"
       );
 
       result.on("data", () => {});

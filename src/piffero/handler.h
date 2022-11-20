@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <iomanip>
 #include "../../deps/rapidjson/include/rapidjson/rapidjson.h"
@@ -44,11 +45,11 @@ namespace jpath
 		int currentIndex;
 		bool isLast_;
 		Last last;
-	    Function& stream; // TODO:OUTPUT STREAM 
+	    ofstream& stream; 
 		istream& origin;
 		Env& env;
 
-		SingleStepHandler(PathInfo &path, bool isLast,  Napi::Function &_stream, istream& _origin, Env& _env) : origin(_origin), stream(_stream),env(_env)
+		SingleStepHandler(PathInfo &path, bool isLast,  ofstream &_stream, istream& _origin, Env& _env) : origin(_origin), stream(_stream),env(_env)
 		{
 			pathItemId = path.itemsId;
 			recording = false;
@@ -120,15 +121,15 @@ namespace jpath
 					recording = false;
 					closed = true;
 					origin.setstate(std::ios::eofbit);
+					// straam.close();
 					// stream.ends();
 				}
 				else
 				{
 					addCommaIfNeeded();
-									  stream.Call(
-        {Napi::String::New(env, "data"), Napi::String::New(env, "{")});
+					// stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "{")});
 				
-					//stream << "{";
+					stream << "{";
 				}
 			last = startobject;
 			depthCounter++;
@@ -144,13 +145,12 @@ namespace jpath
 					recording = false;
 					closed = true;
 					origin.setstate(std::ios::eofbit);
+					//straam.close();
 				}
 				else
 				{
-												  stream.Call(
-        {Napi::String::New(env, "data"), Napi::String::New(env, "}")});
-				
-					//stream << "}";
+					//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "}")});
+					stream << "}";
 				}
 			}
 			last = endobject;
@@ -163,10 +163,8 @@ namespace jpath
 			if (recording && isLast_)
 			{
 				addCommaIfNeeded();
-											  stream.Call(
-        {Napi::String::New(env, "data"), Napi::String::New(env, "[")});
-				
-				//stream << "[";
+				// stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "[")});
+				stream << "[";
 			}
 			last = startarray;
 			depthCounter++;
@@ -182,15 +180,15 @@ namespace jpath
 					recording = false;
 					closed = true;
 					origin.setstate(std::ios::eofbit);
+					//straam.close();
 					// stream.ends();
 					return true;
 				}
 				else
 				{
-												  stream.Call(
-        {Napi::String::New(env, "data"), Napi::String::New(env, "]")});
+					// stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "]")});
 				
-					//stream << "]";
+					stream << "]";
 				}
 			}
 			last = endarray;
@@ -207,17 +205,18 @@ namespace jpath
 				recording = false;
 				closed = true;
 				origin.setstate(std::ios::eofbit);
+				//stream.close();
 				// stream.ends();
 				return true;
 			}
 			if (recording && isLast_)
 			{
 				addCommaIfNeeded();
-				stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\"")});
-				stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, str )});
-				stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\":")});
+				//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\"")});
+				//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, str )});
+				//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\":")});
 				
-				//stream << "\"" << str << "\":";
+				stream << "\"" << str << "\":";
 				//stream.flush();
 			}
 			else if (pathPrimoLivello.compare(keystring) == 0 && depthCounter <= 1)
@@ -243,10 +242,10 @@ namespace jpath
 					if (isLast_)
 					{
 						addCommaIfNeeded();
-						stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "{\"")});
-						stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, str)});
-						stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\":")});						
-						// stream << "{\"" << str << "\":";
+						//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "{\"")});
+						//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, str)});
+						//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\":")});						
+					    stream << "{\"" << str << "\":";
 					}
 					recording = true;
 					depthCounter--;
@@ -262,15 +261,16 @@ namespace jpath
 			if (recording && isLast_)
 			{
 				addCommaIfNeeded();
-				stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "null")});
-				//stream << "null";
+				// stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "null")});
+				stream << "null";
 
 				if (depthCounter == 1)
 				{
 					recording = false;
 					closed = true;
 					origin.setstate(std::ios::eofbit);
-					// stream.ends();
+					//stream.close();
+					 // stream.ends();
 				}
 			}
 			last = value;
@@ -284,19 +284,20 @@ namespace jpath
 				addCommaIfNeeded();
 				if (b)
 				{
-					stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "true")});
-					//stream << "true";
+					//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "true")});
+					stream << "true";
 				}
 				else
 				{
-					stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "false")});
-					//stream << "false";
+					//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "false")});
+					stream << "false";
 				}
 
 				if (depthCounter == 1)
 				{
 					recording = false;
 					closed = true;
+					//stream.close();
 					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
@@ -310,16 +311,17 @@ namespace jpath
 			if (recording && isLast_)
 			{
 				addCommaIfNeeded();
-					stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, to_string(i).c_str())});
-				//stream << to_string(i).c_str();
+				//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, to_string(i).c_str())});
+				stream << to_string(i).c_str();
 				;
 
 				if (depthCounter == 1)
 				{
 					recording = false;
 					closed = true;
+					//stream.close();
 				 	origin.setstate(std::ios::eofbit);
-					// stream.ends();
+					 // stream.ends();
 				}
 			}
 			last = value;
@@ -331,17 +333,18 @@ namespace jpath
 			if (recording && isLast_)
 			{
 				addCommaIfNeeded();
-				stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, to_string(u).c_str())});
+				//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, to_string(u).c_str())});
 
-				//stream << to_string(u).c_str();
+				stream << to_string(u).c_str();
 				;
 
 				if (depthCounter == 1)
 				{
 					recording = false;
 					closed = true;
+					//stream.close();
 					origin.setstate(std::ios::eofbit);
-					// stream.ends();
+					 // stream.ends();
 				}
 			}
 			last = value;
@@ -353,14 +356,15 @@ namespace jpath
 			if (recording && isLast_)
 			{
 				addCommaIfNeeded();
-				stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, to_string(i).c_str())});
-				//stream << to_string(i).c_str()
+				//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, to_string(i).c_str())});
+				stream << to_string(i).c_str()
 				;
 
 				if (depthCounter == 1)
 				{
 					recording = false;
 					closed = true;
+					// stream.close();
 				 	origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
@@ -373,16 +377,17 @@ namespace jpath
 			if (recording && isLast_)
 			{
 				addCommaIfNeeded();
-				stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, to_string(u).c_str())});
-				//stream << to_string(u).c_str();
+				//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, to_string(u).c_str())});
+				stream << to_string(u).c_str();
 
 
 				if (depthCounter == 1)
 				{
 					recording = false;
 					closed = true;
+					// stream.close();
 					origin.setstate(std::ios::eofbit);
-					// stream.ends();
+					 // stream.ends();
 				}
 			}
 			last = value;
@@ -394,13 +399,14 @@ namespace jpath
 			if (recording && isLast_)
 			{
 				addCommaIfNeeded();
-				stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, to_string(d).c_str())});
-				//stream << to_string(d).c_str();
+				//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, to_string(d).c_str())});
+				stream << to_string(d).c_str();
 
 				if (depthCounter == 1)
 				{
 					recording = false;
 					closed = true;
+					//stream.close();
 					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
@@ -414,14 +420,15 @@ namespace jpath
 			if (recording && isLast_)
 			{
 				addCommaIfNeeded();
-					stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, str)});
-				//stream << str;
+				//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, str)});
+				stream << str;
 				if (depthCounter == 1)
 				{
 					recording = false;
 					closed = true;
+					// stream.close();
 					origin.setstate(std::ios::eofbit);
-					// stream.ends();
+					 //stream.ends();
 				}
 			}
 			last = value;
@@ -435,20 +442,21 @@ namespace jpath
 				addCommaIfNeeded();
 				if ((str == NULL) || (str[0] == '\0'))
 				{
-					stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\"\"")});
-					//stream << "\"\"";
+					//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\"\"")});
+					stream << "\"\"";
 				}
 				else
 				{
-					stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\"")});
-					stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, escape_json(str).c_str())});
-					stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\"")}); 
-					// stream << "\"" << escape_json(str).c_str() << "\"";
+					//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\"")});
+					//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, escape_json(str).c_str())});
+					//stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, "\"")}); 
+				    stream << "\"" << escape_json(str).c_str() << "\"";
 				}
 				if (depthCounter == 1)
 				{
 					recording = false;
 					closed = true;
+					// stream.close();
 					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
@@ -461,8 +469,8 @@ namespace jpath
 		{
 			if (last == endarray || last == endobject || last == value)
 			{
-				stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, ",")});
-				// stream << ",";
+				// stream.Call({Napi::String::New(env, "data"), Napi::String::New(env, ",")});
+				stream << ",";
 			}
 		}
 	};
