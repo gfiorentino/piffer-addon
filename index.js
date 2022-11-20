@@ -17,16 +17,17 @@ suite
     maxTime: 5,
     fn: function (deferred) {
       const emitter = new EventEmitter();
-      let resultString2 = "";
-
-      emitter.on("data", (evt) => {
-        resultString2 += evt.toString();
-      });
       emitter.on("end", () => {
-        deferred.resolve();
-      });
+        let rs =fs.createReadStream("files/example.json",{encoding: "utf8"});
+        rs.on("data", (data) => {
+         // console.log(data);
+        });
 
-      addon.callEmit(emitter.emit.bind(emitter), "a[50].payload.pull_request.url");
+        rs.on("end", () => {
+          deferred.resolve();
+        });
+      });
+      addon.callEmit(emitter.emit.bind(emitter), "a[5500].payload.pull_request.url");
     },
   })
   .add("Piffero (stream)", {
@@ -35,7 +36,7 @@ suite
     fn: function (deferred) {
       var result = piffero.Piffero.findByPath(
         fs.createReadStream("files/large-file.json"),
-        "$.a[50].payload.pull_request.url"
+        "$.a[5500].payload.pull_request.url"
       );
 
       result.on("data", () => {});

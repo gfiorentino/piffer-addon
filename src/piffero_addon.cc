@@ -27,7 +27,6 @@ void CallEmit(const Napi::CallbackInfo& info) {
     //callback
     Napi::Function emit = info[0].As<Napi::Function>();
     parser.parsePath(isw, vectorPathInfo, emit, ifs, env);
-    emit.Call({Napi::String::New(env, "start")});
     emit.Call({Napi::String::New(env, "end")});
 }
 

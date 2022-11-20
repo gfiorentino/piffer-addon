@@ -27,7 +27,7 @@ namespace jpath
 		{
 
 			ofstream myfile;
-  			myfile.open ("files/example.txt");
+  			myfile.open ("files/example.json");
 			vector<SingleStepHandler> handlerVector;
 
 			for (int i = 0; i < jsonpath.size() - 1; i++)
