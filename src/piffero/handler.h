@@ -44,7 +44,7 @@ namespace jpath
 		int currentIndex;
 		bool isLast_;
 		Last last;
-	    Function& stream; // TODO:AUTPUT STREAM 
+	    Function& stream; // TODO:OUTPUT STREAM 
 		istream& origin;
 		Env& env;
 
@@ -119,7 +119,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					// origin.setstate(std::ios::eofbit);
+					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
 				else
@@ -143,7 +143,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					//origin.setstate(std::ios::eofbit);
+					origin.setstate(std::ios::eofbit);
 				}
 				else
 				{
@@ -181,7 +181,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					// origin.setstate(std::ios::eofbit);
+					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 					return true;
 				}
@@ -206,7 +206,7 @@ namespace jpath
 			{
 				recording = false;
 				closed = true;
-				// origin.setstate(std::ios::eofbit);
+				origin.setstate(std::ios::eofbit);
 				// stream.ends();
 				return true;
 			}
@@ -269,7 +269,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					// origin.setstate(std::ios::eofbit);
+					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
 			}
@@ -297,7 +297,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					// origin.setstate(std::ios::eofbit);
+					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
 			}
@@ -318,7 +318,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-				//	origin.setstate(std::ios::eofbit);
+				 	origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
 			}
@@ -340,7 +340,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					//origin.setstate(std::ios::eofbit);
+					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
 			}
@@ -361,7 +361,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					// origin.setstate(std::ios::eofbit);
+				 	origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
 			}
@@ -381,7 +381,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					// origin.setstate(std::ios::eofbit);
+					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
 			}
@@ -401,7 +401,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					//origin.setstate(std::ios::eofbit);
+					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
 			}
@@ -420,7 +420,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					// origin.setstate(std::ios::eofbit);
+					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
 			}
@@ -449,7 +449,7 @@ namespace jpath
 				{
 					recording = false;
 					closed = true;
-					//	origin.setstate(std::ios::eofbit);
+					origin.setstate(std::ios::eofbit);
 					// stream.ends();
 				}
 			}

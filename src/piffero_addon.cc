@@ -16,10 +16,7 @@ using namespace jpath;
 void CallEmit(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
     Napi::HandleScope scope(env);
-
-    // nodejs callback
-    Napi::Function cb = info[0].As<Napi::Function>();
-
+    
     Napi::String pathString = info[1].As<Napi::String>();
 
     std::ifstream ifs("files/large-file.json");
@@ -27,6 +24,7 @@ void CallEmit(const Napi::CallbackInfo& info) {
 
     vector<PathInfo> vectorPathInfo = JsonPath::parseToVector(pathString);
     jpath::JSONParser<IStreamWrapper> parser;
+    //callback
     Napi::Function emit = info[0].As<Napi::Function>();
     parser.parsePath(isw, vectorPathInfo, emit, ifs, env);
     emit.Call({Napi::String::New(env, "start")});

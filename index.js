@@ -1,55 +1,63 @@
-"use strict";
-
-const express  = require('express');
 const EventEmitter = require("events").EventEmitter;
 const addon = require("bindings")("piffero_addon");
-const emitter = new EventEmitter();
+
+var Benchmark = require("benchmark");
+
+var suite = new Benchmark.Suite();
 
 const piffero = require("piffero");
 const fs = require("fs");
 
-// create read stream of json
-const inputStream = fs.createReadStream("files/large-file.json");
-// pass the stream to Piffero with the json path
-/*const resultStream = piffero.Piffero.findByPath(
-  inputStream,
-  "$.a[500].payload.pull_request"
-);
+// var JSON_PATH = '[5000].payload';
+// var JSON_PATH = '[1].payload';
 
-// trasform the stream to string and print into console
-let resultString = "";
-console.time("javascript");
-resultStream.on("data", (chunk) => (resultString += chunk.toString()));
-resultStream.on("end", () => {
-  console.timeEnd("javascript");
- // console.log(resultString);
-});*/
+suite
 
+  .add("c++ addon", {
+    defer: true,
+    maxTime: 5,
+    fn: function (deferred) {
+      const emitter = new EventEmitter();
+      let resultString2 = "";
 
-//const app = express();
+      emitter.on("data", (evt) => {
+        resultString2 += evt.toString();
+      });
+      emitter.on("end", () => {
+        deferred.resolve();
+      });
 
-console.time("c++");
-let resultString2 = "";
-emitter.on("start", () => {
-  console.log("### START ...");
-});
-emitter.on("data", (evt) => {
-  resultString2 += evt.toString();
- // console.log(evt);
-});
+      addon.callEmit(emitter.emit.bind(emitter), "a[5000].payload.pull_request.url");
+    },
+  })
+  .add("Piffero (stream)", {
+    defer: true,
+    maxTime: 5,
+    fn: function (deferred) {
+      var result = piffero.Piffero.findByPath(
+        fs.createReadStream("files/large-file.json"),
+        "$.a[5000].payload.pull_request.url"
+      );
 
-emitter.on("end", () => {
-  console.timeEnd("c++");
-  console.log("### END ###");
-   console.log(resultString2);
-});
-
-addon.callEmit(emitter.emit.bind(emitter), "a[5000].payload.pull_request");
-
-
-/*app.listen(3000, () => {
-  console.log("Open your browser");
-}); */
-
-
-
+      result.on("data", () => {});
+      result.on("end", () => {
+        deferred.resolve();
+      });
+    },
+  })
+  .on("complete", function () {
+    console.log("###########################################");
+    for (var i = 0; i < this.length; i++) {
+      console.log(
+        this[i].name +
+          " " +
+          this[i].hz +
+          " ops/sec (" +
+          this[i].stats.sample.length +
+          " runs sampled)"
+      );
+    }
+    console.log("Fastest is " + this.filter("fastest").map("name"));
+    console.log("Slowest is " + this.filter("slowest").map("name"));
+  })
+  .run({ async: true });
