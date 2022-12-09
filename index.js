@@ -8,9 +8,6 @@ var suite = new Benchmark.Suite();
 const piffero = require("piffero");
 const fs = require("fs");
 
-// var JSON_PATH = '[5000].payload';
-// var JSON_PATH = '[1].payload';
-
 suite
   .add("c++ addon", {
     defer: true,
@@ -27,16 +24,16 @@ suite
           deferred.resolve();
         });
       });
-      addon.callEmit(emitter.emit.bind(emitter), "a[5500].payload.pull_request.url");
+      addon.callEmit(emitter.emit.bind(emitter), "a[5].payload.pull_request.url");
     },
   })
   .add("Piffero (stream)", {
     defer: true,
-    maxTime: 5,
+    maxTime: 10,
     fn: function (deferred) {
       var result = piffero.Piffero.findByPath(
         fs.createReadStream("files/large-file.json"),
-        "$.a[5500].payload.pull_request.url"
+        "$.a[5].payload.pull_request.url"
       );
 
       result.on("data", () => {});

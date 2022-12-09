@@ -21,12 +21,11 @@ void CallEmit(const Napi::CallbackInfo& info) {
 
     std::ifstream ifs("files/large-file.json");
     IStreamWrapper isw(ifs);
-
     vector<PathInfo> vectorPathInfo = JsonPath::parseToVector(pathString);
     jpath::JSONParser<IStreamWrapper> parser;
     //callback
     Napi::Function emit = info[0].As<Napi::Function>();
-    parser.parsePath(isw, vectorPathInfo, emit, ifs, env);
+    parser.parsePath(isw, vectorPathInfo, ifs);
     emit.Call({Napi::String::New(env, "end")});
 }
 

@@ -23,7 +23,7 @@ namespace jpath
 		JSONParser()
 		{
 		}
-		void parsePath(InputStream &is, vector<PathInfo> &jsonpath, Napi::Function &stream, istream &origin, Napi::Env &env)
+		void parsePath(InputStream &is, vector<PathInfo> &jsonpath, istream &origin)
 		{
 
 			ofstream myfile;
@@ -32,11 +32,11 @@ namespace jpath
 
 			for (int i = 0; i < jsonpath.size() - 1; i++)
 			{
-				SingleStepHandler handler(jsonpath[i], false, myfile, origin, env);
+				SingleStepHandler handler(jsonpath[i], false, myfile, origin);
 				handlerVector.push_back(handler);
 			}
 
-			SingleStepHandler parser(jsonpath[jsonpath.size() - 1], true, myfile, origin, env);
+			SingleStepHandler parser(jsonpath[jsonpath.size() - 1], true, myfile, origin);
 			handlerVector.push_back(parser);
 			MasterHandler master(handlerVector);
 			Reader reader;
