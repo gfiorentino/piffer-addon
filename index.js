@@ -30,7 +30,7 @@ emitter.on("end", () => {
 let _stream =  fs.createReadStream("files/large-file.json");
  addon.callEmit(
    emitter.emit.bind(emitter),
-   "a[7650].payload.pull_request",
+   "a[9].payload.pull_request",
    _stream
  );
 

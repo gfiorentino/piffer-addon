@@ -33,12 +33,11 @@ Napi::Value ondata(const Napi::CallbackInfo &info)
   _count = _count + 1;
   if (first)
   {
-    Napi::String pathstring = info.Env().Global().Get('path').As<Napi::String>();
+   
     Napi::Function emit = info.Env().Global().Get('emit').As<Napi::Function>();
     Napi::Function destroy = info.Env().Global().Get('destroy').As<Napi::Function>();
     Napi::Env env = info.Env();
-      asyncWorker = new SimpleAsyncWorker(emit, A::s, pathstring, emit, destroy, env);
-      asyncWorker->Queue();
+    
     first = false;
   }
   return info.Env().Undefined();
@@ -69,9 +68,11 @@ void CallEmit(const Napi::CallbackInfo &info)
   if (!onValue.IsFunction())
     throw Napi::Error::New(info.Env(), "This is not an event emitter");
   Napi::Function on = onValue.As<Napi::Function>();
-
+   Napi::String pathstring = info.Env().Global().Get('path').As<Napi::String>();
+  asyncWorker = new SimpleAsyncWorker(emit, A::s, pathstring, emit, destroy, env);
+      asyncWorker->Queue();
   on.Call(stream, {Napi::String::New(info.Env(), "data"), on_data_ref});
-   on.Call(stream, {Napi::String::New(info.Env(), "end"), on_end_ref});
+  //on.Call(stream, {Napi::String::New(info.Env(), "end"), on_end_ref});
 }
 
 // Init

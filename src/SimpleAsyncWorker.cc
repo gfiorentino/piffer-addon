@@ -6,14 +6,13 @@ SimpleAsyncWorker::SimpleAsyncWorker(Function &callback, std::stringstream &s, N
 
 void SimpleAsyncWorker::Execute()
 {
-  std::this_thread::sleep_for(std::chrono::milliseconds(730));
- // Napi::Function emit = env.Global().Get('emit').As<Napi::Function>();
+  std::this_thread::sleep_for(std::chrono::milliseconds(70));
   vector<jpath::PathInfo> vectorPathInfo = JsonPath::parseToVector(path);
   IStreamWrapper isw(stream);
   jpath::JSONParser<IStreamWrapper> parser;
   ofstream myfile;
   myfile.open("files/example.json");
-  parser.parsePath(isw, vectorPathInfo, myfile, destroy, env);
+  parser.parsePath(isw, vectorPathInfo, myfile, stream);
 };
 
 void SimpleAsyncWorker::OnOK()
