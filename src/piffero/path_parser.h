@@ -20,7 +20,7 @@ namespace jpath
 	public:
 		JSONParser() {
 		}
-		void parsePath(InputStream& is, vector<PathInfo>& jsonpath, Napi::Function& stream, Napi::Function& destroy, Napi::Env& env ) {
+		void parsePath(InputStream& is, vector<PathInfo>& jsonpath, ofstream& stream, Napi::Function& destroy, Napi::Env& env ) {
 
 
 			vector<SingleStepHandler> handlerVector;

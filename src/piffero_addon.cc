@@ -15,75 +15,68 @@
 
 using namespace rapidjson;
 
- struct A {
-    inline static std::stringstream s;
+struct A
+{
+  inline static std::stringstream s;
 };
 
-  bool first = true;
-  int _count = 0;
+bool first = true;
+int _count = 0;
+SimpleAsyncWorker* asyncWorker ;
 
-  Napi::Value ondata(const Napi::CallbackInfo &info) {
-    if (!info[0].IsObject()) printf("Something strange received");
-    A::s.clear();
-    A::s << info[0].ToString().Utf8Value().c_str();
-    _count = _count + 1 ;
-    if(first == true){
-      Napi::String pathstring = info.Env().Global().Get('path').As<Napi::String>();
-      Napi::Function emit = info.Env().Global().Get('emit').As<Napi::Function>();
-      Napi::Function destroy = info.Env().Global().Get('destroy').As<Napi::Function>();
-       Napi::Env env = info.Env();
-        SimpleAsyncWorker* asyncWorker = new SimpleAsyncWorker(emit, A::s, pathstring, emit, destroy, env);
-        asyncWorker->Queue();
-        first = false;
-    
-   }
-  
+Napi::Value ondata(const Napi::CallbackInfo &info)
+{
+  if (!info[0].IsObject())
+    printf("Something strange received");
+  A::s.clear();
+  A::s << info[0].ToString().Utf8Value().c_str();
+  _count = _count + 1;
+  if (first)
+  {
+    Napi::String pathstring = info.Env().Global().Get('path').As<Napi::String>();
+    Napi::Function emit = info.Env().Global().Get('emit').As<Napi::Function>();
+    Napi::Function destroy = info.Env().Global().Get('destroy').As<Napi::Function>();
+    Napi::Env env = info.Env();
+      asyncWorker = new SimpleAsyncWorker(emit, A::s, pathstring, emit, destroy, env);
+      asyncWorker->Queue();
+    first = false;
+  }
   return info.Env().Undefined();
-  }
+}
 
+Napi::Value onend(const Napi::CallbackInfo &info)
+{
+  Napi::Env env = info.Env();
+  Napi::Function emit = info.Env().Global().Get('emit').As<Napi::Function>();
+  emit.Call({Napi::String::New(env, "end")});
+  return info.Env().Undefined();
+}
 
+void CallEmit(const Napi::CallbackInfo &info)
+{
+  Napi::Env env = info.Env();
+  Napi::Function emit = info[0].As<Napi::Function>();
+  Napi::Object stream = info[2].ToObject();
+  env.Global().Set('path', info[1]);
+  env.Global().Set('emit', emit);
 
-  Napi::Value onend(const Napi::CallbackInfo &info) {
-      Napi::Env env = info.Env();
-      Napi::Function emit = info.Env().Global().Get('emit').As<Napi::Function>();
-      emit.Call({Napi::String::New(env, "end")}); 
-    return info.Env().Undefined();
-    }
+  Napi::Function on_data_ref = Napi::Function::New(info.Env(), ondata, "on_data");
+  Napi::Function on_end_ref = Napi::Function::New(info.Env(), onend, "on_end");
 
+  Napi::Value onValue = stream.Get("on");
+  Napi::Function destroy = info[3].As<Napi::Function>();
+  env.Global().Set('destroy', destroy);
+  if (!onValue.IsFunction())
+    throw Napi::Error::New(info.Env(), "This is not an event emitter");
+  Napi::Function on = onValue.As<Napi::Function>();
 
-
-
-void CallEmit(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env(); 
-    Napi::Function emit = info[0].As<Napi::Function>();
-    Napi::Object stream = info[2].ToObject();
-    env.Global().Set('path',info[1]);
-    env.Global().Set('emit',emit);
-
-
-    Napi::Function on_data_ref = Napi::Function::New(info.Env(),ondata, "on_data");
-    Napi::Function on_end_ref = Napi::Function::New(info.Env(),onend, "on_end");
-
-    Napi::Value onValue = stream.Get("on");
-    Napi::Function destroy = info[3].As<Napi::Function>();
-    env.Global().Set('destroy',destroy);
-    if (!onValue.IsFunction()) throw Napi::Error::New(info.Env(), "This is not an event emitter");
-    Napi::Function on = onValue.As<Napi::Function>();
-
-    on.Call(stream, {Napi::String::New(info.Env(), "data"), on_data_ref});
-    on.Call(stream, {Napi::String::New(info.Env(), "end"), on_end_ref});
-
-  
-
-    // nodejs callback
-    Napi::Function cb = info[0].As<Napi::Function>();
-   // std::iostream iost
-
-   
-  }
+  on.Call(stream, {Napi::String::New(info.Env(), "data"), on_data_ref});
+   on.Call(stream, {Napi::String::New(info.Env(), "end"), on_end_ref});
+}
 
 // Init
-Napi::Object Init(Napi::Env env, Napi::Object exports) {
+Napi::Object Init(Napi::Env env, Napi::Object exports)
+{
   exports.Set(Napi::String::New(env, "callEmit"),
               Napi::Function::New(env, CallEmit));
   return exports;

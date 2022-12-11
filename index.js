@@ -9,24 +9,6 @@ const { emit } = require('process');
 const piffero = require("piffero");
 
 
-// create read stream of json
-const inputStream = fs.createReadStream("files/large-file.json");
-// pass the stream to Piffero with the json path
-const resultStream = piffero.Piffero.findByPath(
-  inputStream,
-  "$.a[120].payload.pull_request"
-);
-
-// trasform the stream to string and print into console
- let resultString = "";
-  console.time("javascript");
-resultStream.on("data", (chunk) => (resultString += chunk.toString()));
-resultStream.on("end", () => {
-   console.timeEnd("javascript");
-   //console.log(resultString);
-});
-
-
 
 //const app = express();
 let resultString2 = "";
@@ -48,9 +30,27 @@ emitter.on("end", () => {
 let _stream =  fs.createReadStream("files/large-file.json");
  addon.callEmit(
    emitter.emit.bind(emitter),
-   "a[120].payload.pull_request",
+   "a[7650].payload.pull_request",
    _stream
  );
+
+
+// create read stream of json
+const inputStream = fs.createReadStream("files/large-file.json");
+// pass the stream to Piffero with the json path
+const resultStream = piffero.Piffero.findByPath(
+  inputStream,
+  "$.a[7650].payload.pull_request.url"
+);
+
+// trasform the stream to string and print into console
+ let resultString = "";
+  console.time("javascript");
+resultStream.on("data", (chunk) => (resultString += chunk.toString()));
+resultStream.on("end", () => {
+   console.timeEnd("javascript");
+   console.log(resultString);
+});
 
 
 

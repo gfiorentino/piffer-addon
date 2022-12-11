@@ -26,6 +26,7 @@ class SimpleAsyncWorker : public AsyncWorker {
   void OnOK();
 
   private: 
+  Function& callback;
   std::stringstream& stream;
   std::string path;
   Napi::Function& outStream;
