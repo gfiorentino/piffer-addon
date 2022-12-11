@@ -23,7 +23,7 @@ namespace jpath
 		JSONParser()
 		{
 		}
-		void parsePath(InputStream &is, vector<PathInfo> &jsonpath, istream &origin)
+		void parsePath(FileReadStream &is, vector<PathInfo> &jsonpath, FileReadStream &origin)
 		{
 
 			ofstream myfile;

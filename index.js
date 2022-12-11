@@ -11,7 +11,7 @@ const fs = require("fs");
 suite
   .add("c++ addon", {
     defer: true,
-    maxTime: 10,
+    maxTime: 2,
     fn: function (deferred) {
       const emitter = new EventEmitter();
       emitter.on("end", () => {
@@ -24,16 +24,16 @@ suite
           deferred.resolve();
         });
       });
-      addon.callEmit(emitter.emit.bind(emitter), "a[5].payload.pull_request.url");
+      addon.callEmit(emitter.emit.bind(emitter), "a[5].payload.pull_request");
     },
   })
   .add("Piffero (stream)", {
     defer: true,
-    maxTime: 10,
+    maxTime: 2,
     fn: function (deferred) {
       var result = piffero.Piffero.findByPath(
         fs.createReadStream("files/large-file.json"),
-        "$.a[5].payload.pull_request.url"
+        "$.a[5].payload.pull_request"
       );
 
       result.on("data", () => {});

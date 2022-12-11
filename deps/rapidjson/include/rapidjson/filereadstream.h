@@ -62,6 +62,11 @@ public:
         return (current_ + 4 <= bufferLast_) ? current_ : 0;
     }
 
+    void close() {
+        fclose(fp_);
+        eof_= false;
+    }
+
 private:
     void Read() {
         if (current_ < bufferLast_)
@@ -88,6 +93,7 @@ private:
     size_t readCount_;
     size_t count_;  //!< Number of characters read
     bool eof_;
+
 };
 
 RAPIDJSON_NAMESPACE_END

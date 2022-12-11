@@ -3,6 +3,7 @@
 #include "../deps/rapidjson/include/rapidjson/writer.h"
 #include "../deps/rapidjson/include/rapidjson/stringbuffer.h"
 #include "../deps/rapidjson/include/rapidjson/istreamwrapper.h"
+#include "../deps/rapidjson/include/rapidjson/filereadstream.h"
 #include "piffero/path_parser.h"
 #include "piffero/jsonpath.h"
 #include <fstream>
@@ -16,16 +17,17 @@ using namespace jpath;
 void CallEmit(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
     Napi::HandleScope scope(env);
-    
     Napi::String pathString = info[1].As<Napi::String>();
-
-    std::ifstream ifs("files/large-file.json");
-    IStreamWrapper isw(ifs);
     vector<PathInfo> vectorPathInfo = JsonPath::parseToVector(pathString);
     jpath::JSONParser<IStreamWrapper> parser;
+
+    FILE* fp = fopen("files/large-file.json", "r"); // non-Windows use "r"
+ 
+    char readBuffer[65536];
+    FileReadStream is(fp, readBuffer, sizeof(readBuffer));
     //callback
     Napi::Function emit = info[0].As<Napi::Function>();
-    parser.parsePath(isw, vectorPathInfo, ifs);
+    parser.parsePath(is, vectorPathInfo, is);
     emit.Call({Napi::String::New(env, "end")});
 }
 

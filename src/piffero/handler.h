@@ -13,6 +13,7 @@
 #include "../../deps/rapidjson/include/rapidjson/schema.h"
 #include "../../deps/rapidjson/include/rapidjson/writer.h"
 #include "../../deps/rapidjson/include/rapidjson/filewritestream.h"
+#include "../deps/rapidjson/include/rapidjson/filereadstream.h"
 
 using namespace rapidjson;
 using namespace std;
@@ -45,10 +46,10 @@ namespace jpath
 		int currentIndex;
 		bool isLast_;
 		Last last;
-	    ofstream& stream; 
-		istream& origin;
+		ofstream &stream;
+		FileReadStream &origin;
 
-		SingleStepHandler(PathInfo &path, bool isLast,  ofstream &_stream, istream& _origin) : origin(_origin), stream(_stream)
+		SingleStepHandler(PathInfo &path, bool isLast, ofstream &_stream, FileReadStream &_origin) : origin(_origin), stream(_stream)
 		{
 			pathItemId = path.itemsId;
 			recording = false;
@@ -62,7 +63,7 @@ namespace jpath
 			pathPrimoLivello = path.primoLivello;
 		}
 
-		// used to add escape characters 
+		// used to add escape characters
 		std::string escape_json(const std::string &s)
 		{
 			std::ostringstream o;
@@ -105,11 +106,15 @@ namespace jpath
 			}
 			return o.str();
 		}
-		
-		void closeStream(){
+
+		void closeStream()
+		{
 			recording = false;
 			closed = true;
-			origin.setstate(std::ios::eofbit);		
+			
+			//origin.eof_ = true;
+			origin.close();
+			//origin.setstate(std::ios::eofbit);
 		}
 
 		bool StartObject()
@@ -169,7 +174,7 @@ namespace jpath
 					return true;
 				}
 				else
-				{		
+				{
 					stream << "]";
 				}
 			}
@@ -215,8 +220,8 @@ namespace jpath
 				{
 					if (isLast_)
 					{
-						addCommaIfNeeded();				
-					    stream << "{\"" << str << "\":";
+						addCommaIfNeeded();
+						stream << "{\"" << str << "\":";
 					}
 					recording = true;
 					depthCounter--;
@@ -322,7 +327,6 @@ namespace jpath
 				addCommaIfNeeded();
 				stream << to_string(u).c_str();
 
-
 				if (depthCounter == 1)
 				{
 					this->closeStream();
@@ -374,7 +378,7 @@ namespace jpath
 				}
 				else
 				{
-				    stream << "\"" << escape_json(str).c_str() << "\"";
+					stream << "\"" << escape_json(str).c_str() << "\"";
 				}
 				if (depthCounter == 1)
 				{
@@ -495,7 +499,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-		 	handlerVector_[parserIndex].Key(str, length, copy);
+			handlerVector_[parserIndex].Key(str, length, copy);
 			shiftParser();
 			return true;
 		}
@@ -511,7 +515,7 @@ namespace jpath
 		{
 			if (handlerVector_[parserIndex].closed)
 				return true;
-		    handlerVector_[parserIndex].StartArray();
+			handlerVector_[parserIndex].StartArray();
 			shiftParser();
 			return true;
 		}
@@ -525,5 +529,5 @@ namespace jpath
 		}
 	};
 
-}// namespace jpath
+} // namespace jpath
 #endif
